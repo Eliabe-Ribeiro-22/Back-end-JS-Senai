@@ -27,14 +27,6 @@ function calcularValores() {
 		default:
 			alert("Ocorreu um erro ao calcular!")
 	}
-	/*if (operacao === "+") {
-		resultado = valor1 + valor2;
-	} else if (operacao === "-") {
-		resultado = valor1 - valor2;
-	} else if (operacao === "/") {
-		resultado = valor1 / valor2;
-	} else if (operacao === "*") {
-		resultado = valor1 * valor2;
-	}*/
-		document.getElementById("txtResultado").innerHTML = resultado;
+	
+	document.getElementById("txtResultado").innerHTML = resultado;
 }
