@@ -27,7 +27,7 @@ const uri =
 mongoose
   .connect(uri, {
     useNewUrlParser: true,
-    useUnifiedTopology: true
+    useUnifiedTopology: true,
   })
   .then(() => {
     console.log("A conexão com o MongoDB foi realizada com sucesso!");
@@ -58,8 +58,8 @@ router.use(function (req, res, next) {
   res.header("Access-Control-Allow-Methods", "GET, PUT, POST, DELETE");
   app.use(cors());
   next();
+  console.log("Você passou o NEXT")
 });
-
 
 //Definição de uma rota com prefixo '/api' para todas as rotas
 app.use("/api", router);
@@ -75,7 +75,7 @@ app.get("/", (req, res) => {
  */
 router.get("/", function (req, res) {
   res.json({
-    message: "Olá mundo! Está é a nossa API desenvolvida em Node.js."
+    message: "Olá mundo! Este JSON mostra que a nossa API foi desenvolvida com sucesso",
   });
 });
 
@@ -132,21 +132,22 @@ router
    */
 
   //Implementar aqui a rota de edição do método HTTP PUT
-  .put(function (req, res){
-    const user = Usuario.find(
-      (user) => user.id === parseInt(req.params.id, 10)
-    );
+  .put(function (req, res) {
+    Usuario.findById(req.params.usuario_id, 
+      function (error, usuario) {
+      if (error) res.send(error);
+      //A solicitação envia os dados para serem validados pelo esquema 'usuario'
+      usuario.nome = req.body.nome
+      usuario.login = req.body.login
+      usuario.senha = req.body.senha
 
-    if (!user)
-      res.status(404).send("Não foi possível encontrar o usuário")
-    
-    var usuario = new Usuario()
-    
-    usuario.nome = req.body.nome
-    usuario.login = req.body.login
-    usuario.senha = req.body.senha
+      usuario.save(function (error){
+        if (error) res.send(error);
+        res.json({ message: "Usuário atualizado com sucesso" })
+        
+      });
+    });
 
-    res.send(usuario)
   })
   /**
    * Método DELETE: deletar um usuário específico
@@ -155,7 +156,7 @@ router
   .delete(function (req, res) {
     Usuario.deleteOne(
       {
-        _id: req.params.usuario_id
+        _id: req.params.usuario_id,
       },
       function (error) {
         if (error) res.send(error);
